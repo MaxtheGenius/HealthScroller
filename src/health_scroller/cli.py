@@ -55,7 +55,7 @@ def _ayuda() -> str:
     return (  # texto del comando /ayuda (siempre en ASCII seguro para consolas Windows)
         "\nComandos:\n"
         "  /ayuda            muestra esta ayuda\n"
-        "  /agente <nombre>  obliga a responder a un agente (conversacion, estadistico, algebraico, simulacion)\n"
+        "  /agente <nombre>  obliga a responder a un agente (conversacion, estadistico, algebraico, simulacion, plataformas)\n"
         "  /reset            borra el historial de la conversación\n"
         "  /salir            cierra el chat\n"
         "Cualquier otro texto se envía al orquestador, que elige al especialista."

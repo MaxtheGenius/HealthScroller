@@ -23,6 +23,7 @@ from langgraph.graph import END, START, MessagesState, StateGraph  # primitivas 
 from .agents.algebra import crear_agente_algebraico  # fábrica del agente algebraico
 from .agents.conversation import crear_agente_conversacion  # fábrica del agente conversacional
 from .agents.orchestrator import clasificar_intencion  # clasificador de etiquetas (plan A + plan B)
+from .agents.plataformas import crear_agente_plataformas  # fábrica del agente de plataformas (NUEVO)
 from .agents.simulation import crear_agente_simulacion  # fábrica del agente de simulación
 from .agents.statistics import crear_agente_estadistico  # fábrica del agente estadístico
 
@@ -43,7 +44,7 @@ def nodo_orquestador(estado: EstadoChat) -> dict:
     return {"ruta": clasificar_intencion(ultima_pregunta)}  # clasifica (LLM o palabras clave) y guarda la etiqueta en el estado
 
 
-def _enrutar(estado: EstadoChat) -> Literal["conversacion", "estadistico", "algebraico", "simulacion"]:
+def _enrutar(estado: EstadoChat) -> Literal["conversacion", "estadistico", "algebraico", "simulacion", "plataformas"]:
     return estado["ruta"]  # type: ignore[return-value]  # devuelve la etiqueta que puso el orquestador (LangGraph la usará como destino)
 
 
@@ -56,6 +57,7 @@ def crear_grafo():
         "estadistico": crear_agente_estadistico(),  # 3 tools de pandas (descriptiva)
         "algebraico": crear_agente_algebraico(),  # 3 tools de numpy (correlación/recta)
         "simulacion": crear_agente_simulacion(),  # 3 tools de muestreo (MC/bootstrap)
+        "plataformas": crear_agente_plataformas(),  # 2 tools de pandas (comparar redes sociales) <-- NUEVO
     }
 
     builder = StateGraph(EstadoChat)  # constructor del grafo: define el tipo de estado que circula

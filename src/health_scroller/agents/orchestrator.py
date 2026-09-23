@@ -27,7 +27,7 @@ from ..config import NUM_CTX, OLLAMA_BASE_URL, OLLAMA_MODEL  # parámetros globa
 # Este orden IMPORTA: en el plan B se recorre en este sentido, así que si una
 # pregunta casa con dos etiquetas, gana la aparezca antes (p. ej. "simulacion"
 # antes que "estadistico")
-ETIQUETAS = ("simulacion", "algebraico", "estadistico", "conversacion")
+ETIQUETAS = ("plataformas", "simulacion", "algebraico", "estadistico", "conversacion")
 
 # Prompt del plan A. Van TODO dentro del string (los comentarios NO se ponen
 # dentro: se enviarían al LLM como parte del prompt). Estructura:
@@ -35,6 +35,7 @@ ETIQUETAS = ("simulacion", "algebraico", "estadistico", "conversacion")
 # few-shot (enseñanza por ejemplo), 4) orden de responder SOLO la etiqueta.
 PROMPT_ORQUESTADOR = """Eres el enrutador de un equipo de agentes. Clasifica la pregunta del usuario en UNA etiqueta:
 
+- plataformas: comparaciones entre redes sociales (TikTok, Instagram...) o plataformas
 - conversacion: saludos, despedidas, charla general o preguntas sobre el proyecto
 - estadistico: medias, medianas, conteos, resúmenes o comparaciones entre grupos
 - algebraico: correlaciones, regresión lineal, predicciones puntuales
@@ -44,6 +45,7 @@ Ejemplos:
 "¿Cuál es la media de GPA por género?" -> estadistico
 "¿Qué correlación hay entre horas de uso y GPA?" -> algebraico
 "¿Qué pasaría si reduzco el uso a 3 horas?" -> simulacion
+"¿Qué red social se asocia a peor GPA?" -> plataformas
 "¡Hola! ¿Quién eres?" -> conversacion
 
 Responde SOLO con la etiqueta, sin explicaciones."""  # el fragmento final es clave: evita que el modelo razonamiento largo
@@ -52,6 +54,7 @@ Responde SOLO con la etiqueta, sin explicaciones."""  # el fragmento final es cl
 # Diccionario etiqueta -> palabras que, si aparecen en la pregunta, la clasifican
 # en esa etiqueta SIN necesidad de LLM (rápido, gratis y determinista)
 PALABRAS_CLAVE = {
+    "plataformas": ["plataforma", "red social", "redes sociales", "tiktok", "instagram"],
     "estadistico": ["media", "mediana", "promedio", "cuantos", "cuántos", "conteo", "resumen", "grupo", "por género", "por plataforma", "por nivel"],
     "algebraico": ["correlac", "regresi", "pendiente", "predic", "recta", "r2"],
     "simulacion": ["monte carlo", "bootstrap", "intervalo", "simula", "pasaría si", "pasaria si", "escenario"],
