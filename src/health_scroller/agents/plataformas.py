@@ -1,8 +1,8 @@
 """Agente Plataformas: compara el impacto de cada red social.
 
 QUÉ HACE:
-    Crea el agente "plataformas": un LLM con 2 herramientas de pandas
-    (media_por_grupo, conteo_categorias) para comparar redes sociales.
+    Crea el agente "plataformas": un LLM con herramientas de pandas
+    (ranking_media_por_grupo, media_por_grupo, conteo_categorias).
 
 PARA QUÉ SIRVE:
     Responde preguntas como "¿Qué red social se asocia a peor GPA?" o
@@ -14,6 +14,7 @@ CUÁNDO SE EJECUTA:
 """
 
 from ..knowledge import briefing_texto
+from ..tools.plataformas_tools import ranking_media_por_grupo
 from ..tools.stats_tools import conteo_categorias, media_por_grupo
 from .executor import AgenteHerramientas
 
@@ -28,17 +29,22 @@ o "¿Cuántos estudiantes usan cada plataforma?".
 Tienes herramientas para consultar el dataset real de 4500 estudiantes.
 Reglas:
 - Usa SIEMPRE una herramienta para calcular; nunca inventes números.
+- Para "peor" o "mejor" usa ranking_media_por_grupo: NO compares tú los números.
+- Después, EMPIEZA tu respuesta copiando LITERALMENTE la frase que sigue a "RESPUESTA:" (con el nombre de la plataforma y su media).
 - Los nombres de los argumentos deben coincidir EXACTAMENTE con los del listado de herramientas.
 - Responde en español, claro y ordenado, citando los números que devuelve la herramienta.
-- Termina con una interpretación breve de lo que significan esos números.
+- Termina con una interpretación breve (1-2 frases): si la diferencia es de pocas centésimas, di que es muy pequeña.
 
 Ejemplo de llamada correcta para "¿Qué red social se asocia a peor GPA?":
-{{"herramienta": "media_por_grupo", "argumentos": {{"columna_grupo": "Primary_Platform", "columna_valor": "Academic_Performance_GPA"}}}}"""
+{{"herramienta": "ranking_media_por_grupo", "argumentos": {{"columna_grupo": "Primary_Platform", "columna_valor": "Academic_Performance_GPA"}}}}
+
+Ejemplo de llamada correcta para "¿Cuántos estudiantes usan cada plataforma?":
+{{"herramienta": "conteo_categorias", "argumentos": {{"columna": "Primary_Platform"}}}}"""
 
 
 def crear_agente_plataformas():
     """Devuelve el agente de plataformas (con sus herramientas pandas)."""
     return AgenteHerramientas(
         prompt=PROMPT_PLATAFORMAS,
-        tools=[media_por_grupo, conteo_categorias],
+        tools=[ranking_media_por_grupo, media_por_grupo, conteo_categorias],
     )
